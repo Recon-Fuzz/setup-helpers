@@ -7,8 +7,6 @@ import {IERC20} from "openzeppelin/token/ERC20/IERC20.sol";
 
 import {MockERC20} from "./MockERC20.sol";
 
-// TODO: Should we separate asset from lender from borrower from admin?
-// I feel that's the cleanest way
 abstract contract AssetManager {
     using EnumerableSet for EnumerableSet.AddressSet;
 
