@@ -37,7 +37,7 @@ Provides utilities for invariant testing
 ## [Panic](https://github.com/Recon-Fuzz/setup-helpers/blob/main/src/Panic.sol)
 A library that provides named variables corresponding to compiler panic messages. Used to more easily access these messages when using the `checkError` utility.
 
-### [MockERC20](https://github.com/Recon-Fuzz/setup-helpers/blob/main/src/MockERC20.sol)
+## [MockERC20](https://github.com/Recon-Fuzz/setup-helpers/blob/main/src/MockERC20.sol)
 A minimal `MockERC20` contract that lets you mock any standard ERC20 tokens that will be interacting with the system without requiring external dependencies. 
 
 
