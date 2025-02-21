@@ -1,16 +1,19 @@
 // SPDX-License-Identifier: GPL-2.0
 pragma solidity ^0.8.0;
 
-import {BaseSetup} from "chimera/BaseSetup.sol";
-import {vm} from "chimera/Hevm.sol";
-import {EnumerableSet} from "openzeppelin/utils/structs/EnumerableSet.sol";
-import {IERC20} from "openzeppelin/token/ERC20/IERC20.sol";
+import {BaseSetup} from "@chimera/BaseSetup.sol";
+import {vm} from "@chimera/Hevm.sol";
+import {EnumerableSet} from "./utils/EnumerableSet.sol";
 
+/// @dev This is the source of truth for the actors being used in the test
+/// @notice No actors should be used in the suite without being added here first
 abstract contract ActorManager {
     using EnumerableSet for EnumerableSet.AddressSet;
 
+    ///@notice The current actor being used
     address private _actor;
 
+    ///@notice The list of all actors being used
     EnumerableSet.AddressSet private _actors;
 
     // If the current target is address(0) then it has not been setup yet and should revert
@@ -22,55 +25,23 @@ abstract contract ActorManager {
     // Do not allow the default actor
     error DefaultActor();
 
-    // TODO: We have defined the library
-    // But we need to make this more explicit
-    // So it's very clean in the story what's going on
-
+    /// @notice address(this) is the default actor
     constructor() {
-        // address(this) is the default actor
         _actors.add(address(this));
         _actor = address(this);
     }
-    
-    modifier useActor() {
-        vm.prank(_getActor());
-        _;
-    }
 
-    // use this function to get the current active actor
+    /// @notice Returns the current active actor
     function _getActor() internal view returns (address) {
        return _actor;
     }
 
-    // returns an actor different from the currently set one 
-    function _getDifferentActor() internal view returns (address differentActor) {
-        address[] memory actors_ = _getActors();
-        for(uint256 i; i < actors_.length; i++) {
-            if(actors_[i] != _actor) {
-                differentActor = actors_[i];
-            }
-        }
-    }
-
-    function _getRandomActor(uint256 entropy) internal view returns (address randomActor) {
-        address[] memory actorsArray = _getActors();
-        randomActor = actorsArray[entropy % actorsArray.length];
-    }
-
-    // Get regular users
+    /// @notice Returns all actors being used
     function _getActors() internal view returns (address[] memory) {
         return _actors.values();
     }
 
-    function _enableActor(address target) internal {
-        _actor = target;
-    }
-    
-    // NOTE: disabling an actor sets the default actor (address(this)) as the current actor
-    function _disableActor() internal {
-        _actor = address(this);
-    }
-
+    /// @notice Adds an actor to the list of actors
     function _addActor(address target) internal {
         if (_actors.contains(target)) {
             revert ActorExists();
@@ -83,6 +54,7 @@ abstract contract ActorManager {
         _actors.add(target);
     }
 
+    /// @notice Removes an actor from the list of actors
     function _removeActor(address target) internal {
         if (!_actors.contains(target)) {
             revert ActorNotAdded();
@@ -92,14 +64,14 @@ abstract contract ActorManager {
             revert DefaultActor();
         }
 
-        _actors.remove(target);  
+        _actors.remove(target);
     }
 
-    // Note: expose this function _in `TargetFunctions` for actor switching
+    /// @dev Expose this in the `TargetFunctions` contract to let the fuzzer switch actors
+    /// @notice Switches the current actor based on the entropy
+    /// @param entropy The entropy to choose a random actor in the array for switching
     function _switchActor(uint256 entropy) internal {
-        _disableActor();
-
         address target = _actors.at(entropy % _actors.length());
-        _enableActor(target);
+        _actor = target;
     }
 }
