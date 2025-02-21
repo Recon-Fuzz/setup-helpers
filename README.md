@@ -1,5 +1,10 @@
 # Setup Helpers
-- [ActorManager](#actor-manager)
+- [ActorManager](#actormanager)
+- [AssetManager](#assetmanager)
+- [Utils](#utils)
+- [Panic](#panic)
+- [MockERC20](#mockerc20)
+
 These contracts were created with the intention of speeding up the setup process for an invariant testing suite.
 
 For an example implementation of these contracts in use see the [create-chimera-app](https://github.com/Recon-Fuzz/create-chimera-app-2) repo. 
