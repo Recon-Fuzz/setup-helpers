@@ -1,10 +1,4 @@
 # Setup Helpers
-- [ActorManager](#actormanager)
-- [AssetManager](#assetmanager)
-- [Utils](#utils)
-- [Panic](#panic)
-- [MockERC20](#mockerc20)
-
 These contracts were created with the intention of speeding up the setup process for an invariant testing suite.
 
 For an example implementation of these contracts in use see the [create-chimera-app](https://github.com/Recon-Fuzz/create-chimera-app-2) repo. 
@@ -14,10 +8,10 @@ The `ActorManager` contract serves as the source of truth for actors that are be
 
 The primary functions of interest when setting up a suite are:
 - `_addActor` - allows adding a new address as an actor that can be tracked
-- `_switchActor` - allows the fuzzer to change the actor returned by `_getActor`
-  - this should be exposed in a target function that can be called by the fuzzer to test random combinations of actors calling state changing target functions
+- `_switchActor` - this should be exposed in a target function that can be called by the fuzzer to randomly switch between actors
 
 To use the actors stored in the ActorManager, add the `asActor` modifier on all of your target function handlers which pranks as the currently set actor. 
+
 For privileged functions you can use the `asAdmin` modifier which calls the target functions as the tester contract (`address(this)`). The tester contract is typically set as the default admin address by convention. 
 
 ## [AssetManager](https://github.com/Recon-Fuzz/setup-helpers/blob/main/src/AssetManager.sol)
@@ -39,5 +33,3 @@ A library that provides named variables corresponding to compiler panic messages
 
 ## [MockERC20](https://github.com/Recon-Fuzz/setup-helpers/blob/main/src/MockERC20.sol)
 A minimal `MockERC20` contract that lets you mock any standard ERC20 tokens that will be interacting with the system without requiring external dependencies. 
-
-
