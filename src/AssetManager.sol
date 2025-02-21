@@ -4,8 +4,8 @@ pragma solidity ^0.8.0;
 import {BaseSetup} from "@chimera/BaseSetup.sol";
 import {vm} from "@chimera/Hevm.sol";
 
-import {EnumerableSet} from "./utils/EnumerableSet.sol";
-import {MockERC20} from "../mocks/MockERC20.sol";
+import {EnumerableSet} from "./EnumerableSet.sol";
+import {MockERC20} from "./MockERC20.sol";
 
 /// @dev Source of truth for the assets being used in the test
 /// @notice No assets should be used in the suite without being added here first
