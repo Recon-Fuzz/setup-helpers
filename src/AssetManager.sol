@@ -43,7 +43,7 @@ abstract contract AssetManager {
     /// @param decimals The number of decimals for the asset
     /// @return The address of the new asset
     function _newAsset(uint8 decimals) internal returns (address) {
-        address asset_ =  address(new MockERC20("Test Token", "TST", decimals)); // If names get confusing, concatenate the decimals to the name
+        address asset_ = address(new MockERC20("Test Token", "TST", decimals)); // If names get confusing, concatenate the decimals to the name
         _addAsset(asset_);
         __asset = asset_; // sets the asset as the current asset
         return asset_;
@@ -82,9 +82,11 @@ abstract contract AssetManager {
     /// @param actorsArray The array of actors to mint the asset to
     /// @param approvalArray The array of addresses to approve the asset to
     /// @param amount The amount of the asset to mint
-    function _finalizeAssetDeployment(address[] memory actorsArray, address[] memory approvalArray, uint256 amount) internal {
+    function _finalizeAssetDeployment(address[] memory actorsArray, address[] memory approvalArray, uint256 amount)
+        internal
+    {
         _mintAssetToAllActors(actorsArray, amount);
-        for(uint256 i; i < approvalArray.length; i++) {
+        for (uint256 i; i < approvalArray.length; i++) {
             _approveAssetToAddressForAllActors(actorsArray, approvalArray[i]);
         }
     }

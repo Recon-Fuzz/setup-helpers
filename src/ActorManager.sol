@@ -33,7 +33,7 @@ abstract contract ActorManager {
 
     /// @notice Returns the current active actor
     function _getActor() internal view returns (address) {
-       return _actor;
+        return _actor;
     }
 
     /// @notice Returns all actors being used

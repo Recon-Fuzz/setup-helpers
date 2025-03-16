@@ -4,18 +4,17 @@ pragma solidity ^0.8.0;
 import {Panic} from "./Panic.sol";
 
 contract Utils {
-
     /// @dev check if the error returned from a call is the same as the expected error
     /// @param err the error returned from a call
     /// @param expected the expected error
     /// @return true if the error is the same as the expected error, false otherwise
-    function checkError(bytes memory err, string memory expected) internal pure returns(bool) {
+    function checkError(bytes memory err, string memory expected) internal pure returns (bool) {
         (string memory revertMsg, bool customError) = _getRevertMsg(err);
-        
+
         bytes32 errorBytes;
         bytes32 expectedBytes;
 
-        if(customError) {
+        if (customError) {
             // Custom error returns the keccak256 hash of the error, so don't need to hash it again
             errorBytes = bytes32(abi.encodePacked(revertMsg, bytes28(0)));
             expectedBytes = bytes4(keccak256(abi.encodePacked(expected)));
@@ -41,18 +40,18 @@ contract Utils {
         if (returnData.length == 4 + 32) {
             // Check that the data starts with the Panic signature
             bool panic = _checkIfPanic(returnData);
-    
+
             if (panic) {
                 return _getPanicCode(returnData);
             }
         }
-        
+
         // Get the error selector from returnData
         bytes4 errorSelector = _getErrorSelector(returnData);
 
         // 2. Error(string) - If it's a standard revert string
         bytes4 errorStringSelector = bytes4(keccak256("Error(string)")); // Get the standard Error(string) selector
-        
+
         if (errorSelector == errorStringSelector) {
             assembly {
                 // slice the sighash of the error so we can decode the string
@@ -67,7 +66,7 @@ contract Utils {
 
     function _checkIfPanic(bytes memory returnData) internal pure returns (bool) {
         bytes4 panicSignature = bytes4(keccak256(bytes("Panic(uint256)")));
-        
+
         for (uint256 i = 0; i < 4; i++) {
             if (returnData[i] != panicSignature[i]) {
                 return false;

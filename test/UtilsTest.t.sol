@@ -11,8 +11,11 @@ contract Thrower {
 
     error SimpleCustomError();
     error ComplexCustomError(string message);
-    
-    enum TestEnum { A, B }
+
+    enum TestEnum {
+        A,
+        B
+    }
 
     function assertionPanic() public pure {
         assert(false);
@@ -22,7 +25,7 @@ contract Thrower {
         uint8 x = 255;
         x += 1;
     }
-    
+
     function divisionPanic() public pure {
         uint256 x = 1;
         x = x / 0;
@@ -58,7 +61,7 @@ contract Thrower {
     }
 
     function memoryPanic() public pure {
-        uint256[] memory arr = new uint256[](2**64); // Too large
+        uint256[] memory arr = new uint256[](2 ** 64); // Too large
     }
 
     function functionPanic() public {
@@ -97,10 +100,10 @@ contract UtilsTest is Test, Utils {
     function setUp() public {
         thrower = new Thrower();
     }
-    
+
     function test_assertionPanic() public {
-        try thrower.assertionPanic() {
-        } catch (bytes memory err) {
+        try thrower.assertionPanic() {}
+        catch (bytes memory err) {
             bool expectedError;
             expectedError = checkError(err, Panic.assertionPanic);
             assertTrue(expectedError, "unexpected error");
@@ -108,112 +111,112 @@ contract UtilsTest is Test, Utils {
     }
 
     function test_arithmeticPanic() public {
-        try thrower.arithmeticPanic() {
-        } catch (bytes memory err) {
+        try thrower.arithmeticPanic() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, Panic.arithmeticPanic);
             assertTrue(expectedError, "unexpected error");
         }
     }
 
     function test_divisionPanic() public {
-        try thrower.divisionPanic() {
-        } catch (bytes memory err) {
+        try thrower.divisionPanic() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, Panic.divisionPanic);
             assertTrue(expectedError, "unexpected error");
         }
     }
 
     function test_enumPanic() public {
-        try thrower.enumPanic() {
-        } catch (bytes memory err) {
+        try thrower.enumPanic() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, Panic.enumPanic);
             assertTrue(expectedError, "unexpected error");
         }
     }
 
     function test_arrayPanic() public {
-        try thrower.arrayPanic() {
-        } catch (bytes memory err) {
+        try thrower.arrayPanic() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, Panic.arrayPanic);
             assertTrue(expectedError, "unexpected error");
         }
     }
 
     function test_emptyArrayPanic() public {
-        try thrower.emptyArrayPanic() {
-        } catch (bytes memory err) {
+        try thrower.emptyArrayPanic() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, Panic.emptyArrayPanic);
             assertTrue(expectedError, "unexpected error");
         }
     }
 
     function test_outOfBoundsPanic() public {
-        try thrower.outOfBoundsPanic() {
-        } catch (bytes memory err) {
+        try thrower.outOfBoundsPanic() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, Panic.outOfBoundsPanic);
             assertTrue(expectedError, "unexpected error");
         }
     }
 
     function test_memoryPanic() public {
-        try thrower.memoryPanic() {
-        } catch (bytes memory err) {
+        try thrower.memoryPanic() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, Panic.memoryPanic);
             assertTrue(expectedError, "unexpected error");
         }
     }
 
     function test_functionPanic() public {
-        try thrower.functionPanic() {
-        } catch (bytes memory err) {
+        try thrower.functionPanic() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, Panic.functionPanic);
             assertTrue(expectedError, "unexpected error");
         }
     }
 
     function test_revertWithoutString() public {
-        try thrower.revertWithoutString() {
-        } catch (bytes memory err) {
+        try thrower.revertWithoutString() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, "");
             assertTrue(expectedError, "unexpected error");
         }
-    } 
+    }
 
     function test_revertWithString() public {
-        try thrower.revertWithString() {
-        } catch (bytes memory err) {
+        try thrower.revertWithString() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, "custom revert message");
             assertTrue(expectedError, "unexpected error");
         }
     }
 
     function test_revertWithSimpleCustomError() public {
-        try thrower.revertWithSimpleCustomError() {
-        } catch (bytes memory err) {
+        try thrower.revertWithSimpleCustomError() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, "SimpleCustomError()");
             assertTrue(expectedError, "unexpected error");
         }
     }
 
     function test_revertWithComplexCustomError() public {
-        try thrower.revertWithComplexCustomError() {
-        } catch (bytes memory err) {
+        try thrower.revertWithComplexCustomError() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, "ComplexCustomError(string)");
             assertTrue(expectedError, "unexpected error");
         }
     }
 
     function test_revertWithRequire() public {
-        try thrower.revertWithRequire() {
-        } catch (bytes memory err) {
+        try thrower.revertWithRequire() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, "");
             assertTrue(expectedError, "unexpected error");
         }
     }
 
     function test_revertWithRequireMessage() public {
-        try thrower.revertWithRequireMessage() {
-        } catch (bytes memory err) {
+        try thrower.revertWithRequireMessage() {}
+        catch (bytes memory err) {
             bool expectedError = checkError(err, "require message");
             assertTrue(expectedError, "unexpected error");
         }
