@@ -1,7 +1,7 @@
 # Setup Helpers
 These contracts were created with the intention of speeding up the setup process for an invariant testing suite.
 
-For an example implementation of these contracts in use see the [create-chimera-app](https://github.com/Recon-Fuzz/create-chimera-app-2) repo. 
+For an example implementation of these contracts in use see the [create-chimera-app](https://github.com/Recon-Fuzz/create-chimera-app) repo. 
 
 ## [ActorManager](https://github.com/Recon-Fuzz/setup-helpers/blob/main/src/ActorManager.sol)
 The `ActorManager` contract serves as the source of truth for actors that are being used in the fuzzing suite setup. 
