@@ -7,6 +7,19 @@ pragma solidity ^0.8.0;
 /// @dev Do not manually set balances without updating totalSupply, as the sum of all user balances must not exceed it.
 abstract contract ERC20 {
     /*//////////////////////////////////////////////////////////////
+                                 ERRORS
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Thrown when attempting to transfer more tokens than available balance
+    error InsufficientBalance(address from, uint256 balance, uint256 amount);
+    
+    /// @notice Thrown when attempting to transfer more tokens than allowed
+    error InsufficientAllowance(address owner, address spender, uint256 allowance, uint256 amount);
+    
+    /// @notice Thrown when minting would cause overflow
+    error MintOverflow(uint256 currentSupply, uint256 amount);
+
+    /*//////////////////////////////////////////////////////////////
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
 
@@ -48,7 +61,11 @@ abstract contract ERC20 {
                                CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(string memory _name, string memory _symbol, uint8 _decimals) {
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        uint8 _decimals
+    ) {
         name = _name;
         symbol = _symbol;
         decimals = _decimals;
@@ -70,7 +87,10 @@ abstract contract ERC20 {
     }
 
     function transfer(address to, uint256 amount) public virtual returns (bool) {
-        balanceOf[msg.sender] -= amount;
+        uint256 fromBalance = balanceOf[msg.sender];
+        if (fromBalance < amount) revert InsufficientBalance(msg.sender, fromBalance, amount);
+        
+        balanceOf[msg.sender] = fromBalance - amount;
 
         // Cannot overflow because the sum of all user
         // balances can't exceed the max uint256 value.
@@ -83,12 +103,21 @@ abstract contract ERC20 {
         return true;
     }
 
-    function transferFrom(address from, address to, uint256 amount) public virtual returns (bool) {
+    function transferFrom(
+        address from,
+        address to,
+        uint256 amount
+    ) public virtual returns (bool) {
         uint256 allowed = allowance[from][msg.sender]; // Saves gas for limited approvals.
+        uint256 fromBalance = balanceOf[from];
 
-        if (allowed != type(uint256).max) allowance[from][msg.sender] = allowed - amount;
+        if (allowed != type(uint256).max) {
+            if (allowed < amount) revert InsufficientAllowance(from, msg.sender, allowed, amount);
+            allowance[from][msg.sender] = allowed - amount;
+        }
 
-        balanceOf[from] -= amount;
+        if (fromBalance < amount) revert InsufficientBalance(from, fromBalance, amount);
+        balanceOf[from] = fromBalance - amount;
 
         // Cannot overflow because the sum of all user
         // balances can't exceed the max uint256 value.
@@ -100,6 +129,7 @@ abstract contract ERC20 {
 
         return true;
     }
+
 
     /*//////////////////////////////////////////////////////////////
                              EIP-2612 LOGIC
@@ -162,12 +192,15 @@ abstract contract ERC20 {
         );
     }
 
+
     /*//////////////////////////////////////////////////////////////
                         INTERNAL MINT/BURN LOGIC
     //////////////////////////////////////////////////////////////*/
 
     function _mint(address to, uint256 amount) internal virtual {
-        totalSupply += amount;
+        uint256 newTotalSupply = totalSupply + amount;
+        if (newTotalSupply < totalSupply) revert MintOverflow(totalSupply, amount);
+        totalSupply = newTotalSupply;
 
         // Cannot overflow because the sum of all user
         // balances can't exceed the max uint256 value.
@@ -179,7 +212,10 @@ abstract contract ERC20 {
     }
 
     function _burn(address from, uint256 amount) internal virtual {
-        balanceOf[from] -= amount;
+        uint256 fromBalance = balanceOf[from];
+        if (fromBalance < amount) revert InsufficientBalance(from, fromBalance, amount);
+        
+        balanceOf[from] = fromBalance - amount;
 
         // Cannot underflow because a user's balance
         // will never be larger than the total supply.
@@ -192,7 +228,11 @@ abstract contract ERC20 {
 }
 
 contract MockERC20 is ERC20 {
-    constructor(string memory _name, string memory _symbol, uint8 _decimals) ERC20(_name, _symbol, _decimals) {}
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        uint8 _decimals
+    ) ERC20(_name, _symbol, _decimals) {}
 
     function mint(address to, uint256 value) public virtual {
         _mint(to, value);
