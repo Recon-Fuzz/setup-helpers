@@ -70,8 +70,9 @@ abstract contract ActorManager {
     /// @dev Expose this in the `TargetFunctions` contract to let the fuzzer switch actors
     /// @notice Switches the current actor based on the entropy
     /// @param entropy The entropy to choose a random actor in the array for switching
-    function _switchActor(uint256 entropy) internal {
-        address target = _actors.at(entropy % _actors.length());
+    /// @return target The new active actor
+    function _switchActor(uint256 entropy) internal returns (address target) {
+        target = _actors.at(entropy % _actors.length());
         _actor = target;
     }
 }
