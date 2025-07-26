@@ -70,9 +70,10 @@ abstract contract AssetManager {
     }
 
     /// @notice Switches the current asset based on the entropy
+    ///   NOTE: We revert if the entropy is greater than the number of actors, for Halmos compatibility
     /// @param entropy The entropy to choose a random asset in the array for switching
     function _switchAsset(uint256 entropy) internal {
-        address target = _assets.at(entropy % _assets.length());
+        address target = _assets.at(entropy);
         __asset = target;
     }
 

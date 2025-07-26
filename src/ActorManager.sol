@@ -68,11 +68,12 @@ abstract contract ActorManager {
     }
 
     /// @dev Expose this in the `TargetFunctions` contract to let the fuzzer switch actors
+    ///   NOTE: We revert if the entropy is greater than the number of actors, for Halmos compatibility
     /// @notice Switches the current actor based on the entropy
     /// @param entropy The entropy to choose a random actor in the array for switching
     /// @return target The new active actor
     function _switchActor(uint256 entropy) internal returns (address target) {
-        target = _actors.at(entropy % _actors.length());
+        target = _actors.at(entropy);
         _actor = target;
     }
 }
