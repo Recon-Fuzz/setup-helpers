@@ -96,10 +96,12 @@ abstract contract AssetManager {
     /// @param amount The amount of the asset to mint
     function _mintAssetToAllActors(address[] memory actorsArray, uint256 amount) private {
         // mint all actors
-        address asset = _getAsset();
-        for (uint256 i; i < actorsArray.length; i++) {
-            vm.prank(actorsArray[i]);
-            MockERC20(asset).mint(actorsArray[i], amount);
+        address[] memory assets = _getAssets();
+        for (uint256 i; i < assets.length; i++) {
+            for (uint256 j; j < actorsArray.length; j++) {
+                vm.prank(actorsArray[j]);
+                MockERC20(assets[i]).mint(actorsArray[j], amount);
+            }
         }
     }
 
@@ -108,10 +110,12 @@ abstract contract AssetManager {
     /// @param addressToApprove The address to approve the asset to
     function _approveAssetToAddressForAllActors(address[] memory actorsArray, address addressToApprove) private {
         // approve to all actors
-        address asset = _getAsset();
-        for (uint256 i; i < actorsArray.length; i++) {
-            vm.prank(actorsArray[i]);
-            MockERC20(asset).approve(addressToApprove, type(uint256).max);
+        address[] memory assets = _getAssets();
+        for (uint256 i; i < assets.length; i++) {
+            for (uint256 j; j < actorsArray.length; j++) {
+                vm.prank(actorsArray[j]);
+                MockERC20(assets[i]).approve(addressToApprove, type(uint256).max);
+            }
         }
     }
 }
