@@ -69,6 +69,7 @@ abstract contract ActorManager {
 
     /// @dev Expose this in the `TargetFunctions` contract to let the fuzzer switch actors
     ///   NOTE: We revert if the entropy is greater than the number of actors, for Halmos compatibility
+    /// @dev This may reduce fuzzing performance if using multiple actors, if so add explicitly clamped handlers to ManagersTargets using the index of all added actors
     /// @notice Switches the current actor based on the entropy
     /// @param entropy The entropy to choose a random actor in the array for switching
     /// @return target The new active actor
