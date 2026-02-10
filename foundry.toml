@@ -7,4 +7,6 @@ remappings = [
     "forge-std/=lib/forge-std/src/"
 ]
 
+[profile.ci]
+
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
